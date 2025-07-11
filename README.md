@@ -27,8 +27,7 @@
 
 ## 🕹️ 실행 방법
 
-1. Visual Studio 또는 다른 C# IDE에서 프로젝트를 엽니다.
-2. `Program.cs`를 시작 파일로 설정한 뒤 실행합니다.
+1. TextRPG 파일 - TextRPG.exe 프로그램 실행!
 
 ## 📁 저장 방식
 
