@@ -51,7 +51,7 @@ namespace TextRPG
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine($"👤 이름       : {Program.player.Name}");
             Console.WriteLine($"💼 직업       : {Program.player.Job}");
-            Console.WriteLine($"📈 레벨       : Lv. {Program.player.Level} (Exp: {Program.player.ExpToNextLevel}/{Program.player.Exp})"); // ✅ 경험치 출력
+            Console.WriteLine($"📈 레벨       : Lv. {Program.player.Level} (Exp: {Program.player.Exp}/{Program.player.ExpToNextLevel})"); // ✅ 경험치 출력
             Console.WriteLine($"❤️ 체력       : {Program.player.HP}");
 
             int bonusAtk = Program.player.Attack - Program.player.BaseAttack;
@@ -118,7 +118,7 @@ namespace TextRPG
             Console.WriteLine("\n🏰 마을로 돌아갑니다...");
             Thread.Sleep(1000);
 
-            BattleSystem.ShowDungeonMenu();
+            Program.StartGame();
         }
 
         #endregion
@@ -152,9 +152,9 @@ namespace TextRPG
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("1. 🟢 쉬운 던전    (권장 공격력: 10 / 방어력: 5)");
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("2. 🟡 일반 던전    (권장 공격력: 25 / 방어력: 20)");
+            Console.WriteLine("2. 🟡 일반 던전    (권장 공격력: 45 / 방어력: 40)");
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("3. 🔴 어려운 던전  (권장 공격력: 45 / 방어력: 40)");
+            Console.WriteLine("3. 🔴 어려운 던전  (권장 공격력: 75 / 방어력: 60)");
             Console.ResetColor();
         }
 
@@ -183,12 +183,16 @@ namespace TextRPG
                 Console.WriteLine("\n❌ 던전 실패! 체력 절반 감소. 보상 없음.");
                 Console.ResetColor();
                 player.HP /= 2;
+                // ✅ 체력 감소 후 죽음 확인
+                GameSystem.CheckDeath(player);
             }
             else
             {
                 int defDiff = requiredDef - player.Defense;
                 int hpLoss = rand.Next(20 + defDiff, 36 + defDiff);
                 player.HP -= Math.Max(hpLoss, 1);
+                // ✅ 체력 감소 후 죽음 확인
+                GameSystem.CheckDeath(player);
 
                 int atk = player.Attack;
                 int bonusPercent = rand.Next(atk, atk * 2 + 1);
@@ -264,8 +268,8 @@ namespace TextRPG
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\n🧟 [던전 3: 죽음의 계곡]");
-            int winRate = GameSystem.CalculateWinRate(Program.player, 45, 40);
-            Console.WriteLine($"📊 권장 공격력: 45 / 방어력: 40");
+            int winRate = GameSystem.CalculateWinRate(Program.player, 75, 60);
+            Console.WriteLine($"📊 권장 공격력: 75 / 방어력: 60");
             Console.WriteLine($"🎯 예상 승리 확률: {winRate}%");
             Console.WriteLine("⚔️ 전투를 시작하시겠습니까?");
             Console.WriteLine("1. ✅ 예   2. ❌ 아니오");
@@ -318,8 +322,8 @@ namespace TextRPG
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\n🌋 [던전 2: 용암 골짜기]");
-            int winRate = GameSystem.CalculateWinRate(Program.player, 25, 20);
-            Console.WriteLine($"📊 권장 공격력: 25 / 방어력: 20");
+            int winRate = GameSystem.CalculateWinRate(Program.player, 45, 40);
+            Console.WriteLine($"📊 권장 공격력: 45 / 방어력: 40");
             Console.WriteLine($"🎯 예상 승리 확률: {winRate}%");
             Console.WriteLine("⚔️ 전투를 시작하시겠습니까?");
             Console.WriteLine("1. ✅ 예   2. ❌ 아니오");
@@ -411,7 +415,7 @@ namespace TextRPG
         {
             GameSystem.ShowDungeonScene(
                 ShowDungeon2UI,
-                () => EnterDungeon(15, 10, 1700),
+                () => EnterDungeon(45, 40, 1700),
                 BattleSystem.ShowDungeonMenu
             );
         }
@@ -420,7 +424,7 @@ namespace TextRPG
         {
             GameSystem.ShowDungeonScene(
                 ShowDungeon3UI,
-                () => EnterDungeon(25, 15, 2500),
+                () => EnterDungeon(75, 60, 2500),
                 BattleSystem.ShowDungeonMenu
             );
         }
